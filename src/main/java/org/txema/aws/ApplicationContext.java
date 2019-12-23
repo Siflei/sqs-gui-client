@@ -3,6 +3,8 @@ package org.txema.aws;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.sqs.AmazonSQSClient;
 
 import java.io.*;
@@ -13,6 +15,8 @@ import java.util.Properties;
  * It selects the configuration and the implementation for SqsClient
  */
 public class ApplicationContext {
+
+    private static Regions region = Regions.EU_CENTRAL_1;
 
     private static Credentials credentials;
     private static SqsClient sqsClient;
@@ -30,6 +34,7 @@ public class ApplicationContext {
         credentials = getCredentialsFromFile();
         AWSCredentials awsCredentials = new BasicAWSCredentials(credentials.getAccessKey(), credentials.getSecretKey());
         AmazonSQSClient client = new AmazonSQSClient(awsCredentials);
+        client.setRegion(Region.getRegion(region));
         sqsClient = new AwsClient(client);
     }
 
@@ -67,6 +72,7 @@ public class ApplicationContext {
         try {
             AWSCredentials awsCredentials = new BasicAWSCredentials(accessKey, secretKey);
             AmazonSQSClient client = new AmazonSQSClient(awsCredentials);
+            client.setRegion(Region.getRegion(Regions.EU_CENTRAL_1));
             client.listQueues();
             return true;
         } catch (AmazonServiceException ex) {
